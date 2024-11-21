@@ -13,7 +13,8 @@
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [
               pandoc
-              texliveFull
+              (texlive.withPackages(ps: [ps.droid]))
+              
               nixpkgs-fmt
             ];
             buildInputs = with pkgs; [
