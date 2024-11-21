@@ -17,7 +17,17 @@ f α
 (a ∷ α)β
 (a₁ : α₁) ⋯ (aₙ : αₙ)β
 Π(a₁ : α₁)(aₙ : αₙ). β
+
+u : (x ∷ ξ) P (p[x])
+u : Π(x₁ : ξ₁) ⋯ (xₙ : ξ­ₙ). 
+
+Π(A, B) -> Cartesian product between A and B, e.g. a set containing (a, b) forall a∈A, b∈B
+
+(x) T₀(u' (x))
+x → T₀(u' (x))
+x → T₀ (u' x)
 -}
+
 
 data Bool : Set where
     true : Bool
@@ -29,10 +39,21 @@ record _×_ (A B : Set) : Set where
     fst : A
     snd : B
 
+mutual
+    data U₀ : Set where
+        π₀ : (u : U₀) → (u' : (x : T₀ u) → U₀) → U₀
+    
+    T₀ : U₀ → Set
+    T₀ (π₀ u u') = T₀ u × (∀ x → T₀ (u' x))
+
+
 data unit : Set where
   tt : unit
 
 data empty : Set where
+
+¬_ : Set → Set
+¬ A = A → empty
     
 module _ (A : Set) (_#_ : A → A → Set) where
     mutual
@@ -62,4 +83,11 @@ foo2 : DList ℕ (_≠_)
 foo2 = cons 1 foo ⟨ {!   !} , tt ⟩
 
 foo3 : DList ℕ (_≠_)
-foo3 = cons 2 foo ⟨ neqBoth neqRight , tt ⟩
+foo3 = cons 2 foo ⟨ neqBoth neqRight , tt ⟩ 
+
+variable
+    n : ℕ
+
+data Vec (A : Set) : ℕ → Set where
+    nil : Vec A 0
+    cons : A → Vec A n → Vec A (succ n)

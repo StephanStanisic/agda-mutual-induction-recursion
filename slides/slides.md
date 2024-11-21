@@ -1,7 +1,7 @@
 ---
 author: Dick Arends and Stephan Stanisic
 title: A general formulation of simultaneous inductive-recursive definitions in type theory
-subtitle: Peter Dybjer, 2000
+subtitle: Peter Dybjer, 1998
 institute: Radboud University
 theme: metropolis
 aspectratio: 169
