@@ -51,9 +51,9 @@ data ℕ : Set where
 {-# BUILTIN NATURAL ℕ #-}
 
 data _≠_ : ℕ → ℕ → Set where
-    eqfst : {n : ℕ} → zero ≠ succ n
-    eqsnd : {n : ℕ} → succ n ≠ zero
-    eqboth : {n m : ℕ} → n ≠ m → succ n ≠ succ m
+    neqLeft : {n : ℕ} → zero ≠ succ n
+    neqRight : {n : ℕ} → succ n ≠ zero
+    neqBoth : {n m : ℕ} → n ≠ m → succ n ≠ succ m
 
 foo : DList ℕ (_≠_)
 foo = cons 1 nil tt
@@ -62,4 +62,4 @@ foo2 : DList ℕ (_≠_)
 foo2 = cons 1 foo ⟨ {!   !} , tt ⟩
 
 foo3 : DList ℕ (_≠_)
-foo3 = cons 2 foo ⟨ eqboth eqsnd , tt ⟩
+foo3 = cons 2 foo ⟨ neqBoth neqRight , tt ⟩
