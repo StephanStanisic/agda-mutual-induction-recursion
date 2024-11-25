@@ -20,13 +20,13 @@ Here is an example
 
 ## Induction-Recursion
 
-Basic Idea: Define a function $f: D \to R$ and its domain of definition $D$ at the **same** time.
+Basic Idea: Define a function $f: D \to R$ and its domain of definition $D$ at the **same** time, $D$ may use $f$.
 
 Why would we want to do this?
 
 . . .
 
-Example: `DList` (**D**istinct **List**):
+Running Example: `DList` (**D**istinct **List**):
 
 ```
 S    : set
@@ -92,7 +92,7 @@ $$
 Introduction Rules:
 
 $$
-\textit{intro} : \cdots \underbrace{(b : \beta)}_{\text{non-recursive}} \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots P(q)
+\textit{intro} : \cdots \underbrace{(b : \beta)}_{\text{non-recursive}} \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots \;\; P(q)
 $$
 
 dots here indicate that there may be $0$ or more. 
@@ -113,34 +113,36 @@ $$
 
 Reminder: 
 $$
-\textit{intro} : \cdots \underbrace{(b : \beta)}_{\text{non-recursive}} \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots P(q)
+\textit{intro} : \cdots \underbrace{(b : \beta)}_{\text{non-recursive}} \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots \;\; P(q)
 $$
 
 ---
 
-## What about code?
+# Tarski Universe Construction
 
-We can even have code...
+## Universes
 
-```haskell
-data List a = Nil | Cons a (List a)
-```
+Russel style Universe, this is what we have seen during the Type Theory lectures. 
 
-with (some) syntax highlighting
+If $U$ denotes a universe, then a term $t : U$ is a type.
 
-
-# How about a new section?
+(syntactic) distinction between terms (elements of $U$) and types $t$ is lost.
 
 ---
 
-## Alerts? Bold?
+## Tarski Universe
 
-We can have **bold text**
+Maintains distinction.
 
-We can also have \alert{alerted text} if you must
+How? Every universe consists of a set of _codes_ $U$ and a decoding function $T$ (sometimes also denoted with `el`).
+
+T maps elements of U to the associated type.
+
+Universe contains the _codes_ for types rather than the types itself. A type $A$ is not an element of $U$ rather, $\exists u : U$ such that $T(u) = A$.
 
 ---
 
-## {.standout}
+## Palmgren's Constructions
 
-Questions?
+See 
+Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics.
