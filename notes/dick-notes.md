@@ -24,6 +24,16 @@ lecture notes with chapter on induction recursion (ch 6): https://www.cs.ox.ac.u
 Tarski universe is a combination of a U and a 
 
 
+## Uitzoeken:
+
+Wat is `well-foundedness` in the context of the paper?
+
+Wat is Pi formation?
+
+https://ncatlab.org/nlab/show/inductive-recursive+type
+
+https://en.wikipedia.org/wiki/Induction-recursion
+
 
 ## Presentation:
 
