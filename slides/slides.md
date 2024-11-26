@@ -7,6 +7,12 @@ theme: metropolis
 aspectratio: 169
 header-includes: |
     \newcommand{\set}{\operatorname*{set}}
+mainfont: Open Sans
+mainfontoptions: Scale=0.8
+sansfont: Open Sans
+sansfontoptions: Scale=0.8
+monofont: Fira Code
+monofontoptions: Scale=0.8
 ---
 
 ## Contents
@@ -142,7 +148,7 @@ Elimination Rules:
 ## Example:
 
 ```
-length: (l : DList)N
+length: (l : DList)ℕ
 
 ```
 
