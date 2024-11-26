@@ -30,6 +30,8 @@ monofontoptions: Scale=0.8
 and when doing a normal recursive definition we need structural recusion for guaranteed termination
 --->
 
+<!--- Claim that universes can be defined in the language itself. --->
+
 Basic Idea: Define a function $f: D \to R$ and its domain of definition $D$ at the **same** time, $D$ may use $f$.
 
 <!--- Why would we want to do this? --->
@@ -49,7 +51,7 @@ diff : (S)(S)set
 
 Example: `DList` (**D**istinct **List**):
 
-```
+```agda
 S    : set
 diff : (S)(S)set
 ```
@@ -134,16 +136,32 @@ Example: Length of DList;
 Assuming $P$ (inductive type) and $f$ (recursive function), may define 
 
 $$
-f' : (a :: \alpha)(c : P(a))\psi'[a,c]
+f': (a :: \alpha)(c : P(a))\psi'[a,c]
 $$
 
 <!--- \psi depends on a and c --->
 using $P$-recursion.
 
-
-Elimination Rules:
-
 ---
+
+## General Schema: Elimination Rules:
+
+Elimination:
+$$
+f'(q,\textit{intro}(\ldots,b,\ldots,u,\ldots)) = e'(\ldots,b,\ldots, u, (x)f'(p[x], u(x)), \ldots)
+$$
+in the context
+$$
+(\ldots,b: \beta, \ldots,u:(x::\xi)P(p[x]),\ldots)
+$$
+where 
+$$
+e'(\ldots,b, \ldots, u,v,\ldots) : \psi'[q,\textit{intro}(\ldots,b,\ldots,u,\ldots)]
+$$
+in the context
+$$
+(\ldots, b,\ldots, u:(x :: \xi )P(p[x]), v: (x :: \xi)\psi'[p[x], u(x)],\ldots)
+$$
 
 ## Example:
 
