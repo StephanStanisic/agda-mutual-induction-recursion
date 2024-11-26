@@ -30,17 +30,24 @@ monofontoptions: Scale=0.8
 and when doing a normal recursive definition we need structural recusion for guaranteed termination
 --->
 
-Basic Idea: Define a function $f: D \to R$ and its domain of definition $D$ at the **same** time, $D$ may use $f$.
+Basic Idea: Define a function and its domain at the **same** time.
+
+$f: D \to R$
+
+- The function definition is recursive by doing induction on $D$,
+- and the datatype $D$ depends on $f$.
+
 
 <!--- Why would we want to do this? --->
 
 . . .
 
-Running Example: `DList` (**D**istinct **List**):
+Running Example: `DList` (**Distinct **List**):
 
 ```
-S    : set
-diff : (S)(S)set
+data DList where
+    S    : set
+    diff : (S)(S)set
 ```
 
 ---

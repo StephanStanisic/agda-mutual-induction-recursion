@@ -39,13 +39,43 @@ record _×_ (A B : Set) : Set where
     fst : A
     snd : B
 
+data ℕ : Set where
+    zero : ℕ
+    succ : ℕ → ℕ
+
+{-# BUILTIN NATURAL ℕ #-}
+
+infix 4 _≡_
+
+data _≡_ {a} {A : Set a} (x : A) : A → Set a where
+  instance refl : x ≡ x
+
+{-# BUILTIN EQUALITY _≡_ #-}
+
 mutual
     data U₀ : Set where
+        --↣₀ : (u : U₀) → (u' : U₀) → U₀
         π₀ : (u : U₀) → (u' : (x : T₀ u) → U₀) → U₀
+        eq₀ : (u : U₀) → (b b' : T₀ u) → U₀
     
     T₀ : U₀ → Set
+    --T₀ (↣₀ c c₁) = {! c → c₁  !}
     T₀ (π₀ u u') = T₀ u × (∀ x → T₀ (u' x))
+    T₀ (eq₀ u b b') = b ≡ b' 
 
+mutual
+    data U (n : ℕ) : Set where
+        π : (u : U n) → (u' : (x : T n u) → U n) → U n
+        eq : (u : U n) → (b b' : T n u) → U n
+    
+    T : (n : ℕ) → U n → Set
+    T n (π u u') = T n u × (∀ x → T n (u' x))
+    T n (eq u b b') = b ≡ b'
+
+-- mutual
+--     data Uni : Set₁ where
+--         Nextu : (U : Uni) → (T : U → Uni) → Uni
+--         Nextt : (U : Uni) → (T : U → Uni) → Nextu U T → Uni
 
 data unit : Set where
   tt : unit
@@ -65,12 +95,6 @@ module _ (A : Set) (_#_ : A → A → Set) where
         fresh nil a = unit
         fresh (cons b u P) a = (a # b) × fresh u a
 
-data ℕ : Set where
-    zero : ℕ
-    succ : ℕ → ℕ
-
-{-# BUILTIN NATURAL ℕ #-}
-
 data _≠_ : ℕ → ℕ → Set where
     neqLeft : {n : ℕ} → zero ≠ succ n
     neqRight : {n : ℕ} → succ n ≠ zero
@@ -89,5 +113,5 @@ variable
     n : ℕ
 
 data Vec (A : Set) : ℕ → Set where
-    nil : Vec A 0
-    cons : A → Vec A n → Vec A (succ n)
+    nil : Vec A 0 
+    cons : A → Vec A n → Vec A (succ n)   
