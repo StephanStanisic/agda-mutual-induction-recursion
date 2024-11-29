@@ -4,7 +4,6 @@ module foo where
 (x : α)β 
 Π(x : α). β
 
-
 (α)β
 α → β
 
@@ -47,21 +46,19 @@ data ℕ : Set where
 
 infix 4 _≡_
 
-data _≡_ {a} {A : Set a} (x : A) : A → Set a where
+data _≡_ {A : Set} (x : A) : A → Set where
   instance refl : x ≡ x
 
 {-# BUILTIN EQUALITY _≡_ #-}
 
 mutual
     data U₀ : Set where
-        --↣₀ : (u : U₀) → (u' : U₀) → U₀
         π₀ : (u : U₀) → (u' : (x : T₀ u) → U₀) → U₀
         eq₀ : (u : U₀) → (b b' : T₀ u) → U₀
     
     T₀ : U₀ → Set
-    --T₀ (↣₀ c c₁) = {! c → c₁  !}
-    T₀ (π₀ u u') = T₀ u × (∀ x → T₀ (u' x))
-    T₀ (eq₀ u b b') = b ≡ b' 
+    T₀ (π₀ u u') = (x : T₀ u) → T₀ (u' x)
+    T₀ (eq₀ u b b') = _≡_ {T₀ u} b b'
 
 mutual
     data U (n : ℕ) : Set where
@@ -72,27 +69,29 @@ mutual
     T n (π u u') = T n u × (∀ x → T n (u' x))
     T n (eq u b b') = b ≡ b'
 
+
 -- mutual
 --     data Uni : Set₁ where
---         Nextu : (U : Uni) → (T : U → Uni) → Uni
---         Nextt : (U : Uni) → (T : U → Uni) → Nextu U T → Uni
+--         Nextu : (U : Set) → (T : U → Set) → Uni
+--         Nextt : (U : Set) → (T : U → Set) → Nextu U T → Uni
 
-data unit : Set where
-  tt : unit
+record ⊤ : Set where
+  instance constructor tt
+{-# BUILTIN UNIT ⊤ #-}
 
-data empty : Set where
+data ⊥ : Set where
 
 ¬_ : Set → Set
-¬ A = A → empty
-    
-module _ (A : Set) (_#_ : A → A → Set) where
+¬ A = A → ⊥
+
+module _ {A : Set} (_#_ : A → A → Set) where
     mutual
         data DList : Set where
             nil : DList
             cons : (b : A) → (u : DList) → (P : fresh u b) → DList
 
         fresh : DList → A → Set
-        fresh nil a = unit
+        fresh nil a = ⊤
         fresh (cons b u P) a = (a # b) × fresh u a
 
 data _≠_ : ℕ → ℕ → Set where
@@ -100,18 +99,20 @@ data _≠_ : ℕ → ℕ → Set where
     neqRight : {n : ℕ} → succ n ≠ zero
     neqBoth : {n m : ℕ} → n ≠ m → succ n ≠ succ m
 
-foo : DList ℕ (_≠_)
+foo : DList _≠_
 foo = cons 1 nil tt
 
-foo2 : DList ℕ (_≠_)
-foo2 = cons 1 foo ⟨ {!   !} , tt ⟩
+foo-wrong : DList _≠_
+foo-wrong = cons 1 foo ⟨ {!   !} , tt ⟩
 
-foo3 : DList ℕ (_≠_)
-foo3 = cons 2 foo ⟨ neqBoth neqRight , tt ⟩ 
+foo2 : DList _≠_
+foo2 = cons 2 foo ⟨ neqBoth neqRight , tt ⟩ 
 
-variable
-    n : ℕ
+foo3 : DList _≠_
+foo3 = cons 3 foo2 ⟨ neqBoth (neqBoth neqRight) , ⟨ neqBoth neqRight , tt ⟩ ⟩
 
-data Vec (A : Set) : ℕ → Set where
-    nil : Vec A 0 
-    cons : A → Vec A n → Vec A (succ n)   
+foo4 : DList _≠_
+foo4 = cons 4 foo3 ⟨ neqBoth (neqBoth (neqBoth neqRight)) , ⟨ neqBoth (neqBoth neqRight) , ⟨ neqBoth neqRight , tt ⟩ ⟩ ⟩
+
+foo5 : DList _≠_
+foo5 = cons 5 foo4 ⟨ neqBoth (neqBoth (neqBoth (neqBoth neqRight))) , ⟨ neqBoth (neqBoth (neqBoth neqRight)) , ⟨ neqBoth (neqBoth neqRight) , ⟨ neqBoth neqRight , tt ⟩ ⟩ ⟩ ⟩
