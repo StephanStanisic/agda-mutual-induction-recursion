@@ -34,7 +34,7 @@ Basic Idea: Define a function and its domain at the **same** time.
 
 $f: D \to R$
 
-- The function definition is recursive by doing induction on $D$,
+- The function definition is recursive by induction on $D$,
 - and the datatype $D$ depends on $f$.
 
 
@@ -42,7 +42,7 @@ $f: D \to R$
 
 . . .
 
-Running Example: `DList` (**Distinct **List**):
+Running Example: `DList` (**D**istinct **List**):
 
 ```
 data DList where
@@ -84,11 +84,40 @@ Formation Rules:
 $$
 \begin{aligned}
     P &: (a :: \alpha) \\
-    f &: (a :: \alpha)(c : P(\alpha))\psi[\alpha]
+    f &: (a :: \alpha)(c : P(a))\psi[a]
 \end{aligned}
 $$
 
-Example!
+$$
+\begin{aligned}
+DList &: \set \\
+Fresh &: (c : DList)(a : A)\set
+\end{aligned}
+$$
+
+---
+
+## General Schema : Formation Rules
+
+(Note we can also parametrize, we can show this, but the notation is very long.)
+
+Formation Rules:
+
+$$
+\begin{aligned}
+    P &: (a :: \alpha) \\
+    f &: (a :: \alpha)(c : P(a))\psi[a]
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\underbrace{DList}_{P} &: \set \\
+\underbrace{Fresh}_{f} &: \underbrace{(c : DList)}_{c}\underbrace{(a : A)\set}_{\psi[a]}
+\end{aligned}
+$$
+
+*Note*: $\alpha$ is the empty sequence.
 
 ---
 
@@ -303,3 +332,26 @@ $$
 
 See 
 Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics.
+
+## Super Universes
+
+Super universe $U_{\infty}$ is the closure of the universe next universe operator **and** all other type formers.
+
+Formation Rules:
+$$
+\begin{aligned}
+U_{\infty} &: \set \\
+T_{\infty} &: (U_{\infty})\set
+\end{aligned}
+$$
+
+*Note*: Construction looks very much like the first universe construction.
+
+--- 
+
+## Super Universe
+
+$$ u_0 : U_{\infty}, $$
+$$ T_{\infty}(u_0) = U_0, $$
+$$ \operatorname*{NextU} : (u : U_{\infty})(u' : (T_{\infty}(u))U_{\infty})U_{\infty}, $$
+$$ T_{\infty}(\operatorname*{NextU}(u, u')) = \operatorname*{NextU}(T_{\infty}(u), (x)T_{\infty}(u'(x))) $$
