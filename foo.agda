@@ -115,4 +115,7 @@ foo4 : DList _≠_
 foo4 = cons 4 foo3 ⟨ neqBoth (neqBoth (neqBoth neqRight)) , ⟨ neqBoth (neqBoth neqRight) , ⟨ neqBoth neqRight , tt ⟩ ⟩ ⟩
 
 foo5 : DList _≠_
-foo5 = cons 5 foo4 ⟨ neqBoth (neqBoth (neqBoth (neqBoth neqRight))) , ⟨ neqBoth (neqBoth (neqBoth neqRight)) , ⟨ neqBoth (neqBoth neqRight) , ⟨ neqBoth neqRight , tt ⟩ ⟩ ⟩ ⟩
+foo5 = cons 5 foo4 ⟨ neqBoth (neqBoth (neqBoth (neqBoth neqRight))) ,
+  ⟨ neqBoth (neqBoth (neqBoth neqRight)) ,
+  ⟨ neqBoth (neqBoth neqRight) , ⟨ neqBoth neqRight , tt ⟩ ⟩ ⟩
+  ⟩

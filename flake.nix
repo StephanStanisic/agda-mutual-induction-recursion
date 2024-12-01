@@ -16,6 +16,8 @@
               (texlive.withPackages(ps: [ps.droid]))
               
               nixpkgs-fmt
+              coq
+              coqPackages_8_19.coq-lsp
             ];
             buildInputs = with pkgs; [
               (agda.withPackages (ps: [
