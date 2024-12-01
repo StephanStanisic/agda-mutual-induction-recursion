@@ -7,6 +7,7 @@ theme: metropolis
 aspectratio: 169
 header-includes: |
     \newcommand{\set}{\operatorname*{set}}
+    \newcommand{\on}[1]{\operatorname*{#1}}
 mainfont: Open Sans
 mainfontoptions: Scale=0.8
 sansfont: Open Sans
@@ -68,8 +69,6 @@ diff : (S)(S)set
 
 ## General Schema
 
-What do we need?
-
 - Formation Rules
 - Introduction Rules
 - Equality Rules
@@ -87,6 +86,8 @@ $$
     f &: (a :: \alpha)(c : P(a))\psi[a]
 \end{aligned}
 $$
+
+. . .
 
 $$
 \begin{aligned}
@@ -144,6 +145,37 @@ $$
 NOTE: "they may appear in any order".
 
 Remark: Removing the dependency of $\beta,\xi,p$ and $q$ on previous recursive premises -> recover schema from prev. presentation. --->
+
+---
+
+## General Schema : Introduction Rules
+
+Introduction Rules:
+
+$$
+\textit{intro} : \cdots (b : \beta) \cdots (u : (x :: \xi)P(p[x])) \cdots P(q)
+$$
+
+. . .
+
+Example:
+
+$$
+\on{cons}: (b : A)(u : \on{DList})(b': \on{Fresh}(u,b))\on{DList}
+$$
+
+$3$ premises of which only the second one is recursive.
+
+<!--- Very lonnngggg --->
+- $b : A$, non-recursive, $\beta = A$.
+- $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
+- $b' : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through the $\on{Fresh}$ function), $\beta[b,u] = \on{Fresh}(u,b)$. 
+
+<!--- 
+
+I think adding the example for pi0 is also nice as it demonstrates a case where u' is generalised and depends on the previous premise.
+
+--->
 
 ---
 
