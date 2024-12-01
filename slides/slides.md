@@ -76,7 +76,7 @@ diff : (S)(S)set
 
 ## General Schema : Formation Rules
 
-(Note we can also parametrize, we can show this, but the notation is very long.)
+<!-- (Note we can also parametrize, we can show this, but the notation is very long.) -->
 
 Formation Rules:
 
@@ -91,8 +91,8 @@ $$
 
 $$
 \begin{aligned}
-DList &: \set \\
-Fresh &: (c : DList)(a : A)\set
+\on{DList} &: \set \\
+\on{Fresh} &: (c : \on{DList})(a : A)\set
 \end{aligned}
 $$
 
@@ -100,7 +100,7 @@ $$
 
 ## General Schema : Formation Rules
 
-(Note we can also parametrize, we can show this, but the notation is very long.)
+<!-- (Note we can also parametrize, we can show this, but the notation is very long.) -->
 
 Formation Rules:
 
@@ -113,8 +113,8 @@ $$
 
 $$
 \begin{aligned}
-\underbrace{DList}_{P} &: \set \\
-\underbrace{Fresh}_{f} &: \underbrace{(c : DList)}_{c}\underbrace{(a : A)\set}_{\psi[a]}
+\underbrace{\on{DList}}_{P} &: \set \\
+\underbrace{\on{Fresh}}_{f} &: \underbrace{(c : \on{DList})}_{c}\underbrace{(a : A)\set}_{\psi[a]}
 \end{aligned}
 $$
 
@@ -191,6 +191,8 @@ Reminder:
 $$
 \textit{intro} : \cdots \underbrace{(b : \beta)}_{\text{non-recursive}} \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots \;\; P(q)
 $$
+
+<!--- Not complete yet --->
 
 ---
 
