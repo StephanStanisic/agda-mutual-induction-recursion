@@ -196,6 +196,24 @@ $$
 
 ---
 
+## General Schema: Equality Rules
+
+$$
+f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots) : \psi[q]
+$$
+in the context
+$$
+(\ldots,b: \beta, \ldots,u:(x::\xi)P(p[x]),\ldots)
+$$
+where 
+$$
+e(\ldots,b, \ldots, v,\ldots) : \psi[q]
+$$
+in the context
+$$
+(\ldots, b : \beta,\ldots, v:(x :: \xi )\psi[p[x]],\ldots)
+$$
+
 ## General Schema : Elimination Rules
 
 Example: Length of DList;
@@ -212,7 +230,7 @@ using $P$-recursion.
 
 ---
 
-## General Schema: Elimination Rules:
+## General Schema: Elimination Rules
 
 Elimination:
 $$
@@ -228,7 +246,7 @@ e'(\ldots,b, \ldots, u,v,\ldots) : \psi'[q,\textit{intro}(\ldots,b,\ldots,u,\ldo
 $$
 in the context
 $$
-(\ldots, b,\ldots, u:(x :: \xi )P(p[x]), v: (x :: \xi)\psi'[p[x], u(x)],\ldots)
+(\ldots, b : \beta,\ldots, u:(x :: \xi )P(p[x]), v: (x :: \xi)\psi'[p[x], u(x)],\ldots)
 $$
 
 ## Example:
