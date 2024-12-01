@@ -18,8 +18,8 @@ monofontoptions: Scale=0.8
 
 ## Contents
 
-* Similtaneous induction-recursion
-* General Scheme
+* What is similtaneous induction-recursion?
+* General schema
 * Examples
 
 # The basics
@@ -122,6 +122,27 @@ $$
 
 ---
 
+## General Schema : Formation Rules
+
+<!--- Maybe move this up a bit and include the part that the A are parameters and the 'a'  are indices. --->
+
+**Note**: We can parametrize definitions explicitly, but notation gets more complicated.
+
+Formation Rules:
+
+$$
+\begin{aligned}
+  P &: (A :: \sigma)(a :: \alpha[A])\set, \\
+  f &: (A :: \sigma)(a :: \alpha[A])(c : P(A, a))\psi[A,a]
+\end{aligned}
+$$
+
+Here $A :: \sigma$ is the sequence of parameters, all following types may then depend on $A$. 
+
+The rest of the rules can be parametrized in a similar fashion.
+
+---
+
 ## General Schema : Introduction Rules
 
 Introduction Rules:
@@ -145,6 +166,18 @@ $$
 NOTE: "they may appear in any order".
 
 Remark: Removing the dependency of $\beta,\xi,p$ and $q$ on previous recursive premises -> recover schema from prev. presentation. --->
+
+---
+
+## General Schema : Introduction Rules
+
+Introduction Rules:
+
+$$
+\textit{intro} : \cdots (b : \beta)\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+$$
+
+<!--- HIer moet nog bij dat je dit alleen mag doen als je $b$ geldig kan constructen. --->
 
 ---
 
