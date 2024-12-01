@@ -177,7 +177,61 @@ $$
 \textit{intro} : \cdots (b : \beta)\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
 $$
 
-<!--- HIer moet nog bij dat je dit alleen mag doen als je $b$ geldig kan constructen. --->
+<!--- (The criteria for \xi, p, and q are analogous --->
+
+Consider $\beta = \beta[\ldots, b', \ldots, u', \ldots]$, where $b' : \beta'$ (non-recursive) and $u' : (x' :: \xi')P(p'[x'])$ (recursive) are earlier premises.
+
+Dependence on earlier recursive premise can only happen through application of $f$, that is
+$$
+\beta[\ldots, b', \ldots, u', \ldots]
+$$
+is of the form
+$$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$
+
+The typing criteria for $\xi$, $p$ and $q$ are similar.
+<!-- (x')f(p'[x'],u'(x')) is an abstraction?  -->
+
+---
+
+## General Schema : Introduction Rules
+
+$$
+\textit{intro} : \cdots (b : \beta)\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+$$
+
+where
+$$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$
+is a small type in the context
+$$
+(\ldots, b':\beta',\ldots, v' : (x' :: \xi')\psi[p'[x']], \ldots)
+$$
+
+---
+
+## General Schema : Introduction Rules
+
+$$
+\textit{intro} : \cdots (b : \beta)\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+$$
+
+$$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$
+
+**Note**: Removing the dependence of $\beta,\xi,p$ and $q$ on earlier recursive terms yield the introduction rules we saw earlier:
+
+$$\begin{aligned}
+intro:  &\; (A :: \sigma) \\
+        &\; (b :: \beta[A]) \\
+        &\; (u :: \gamma[A,b]) \\
+        &\;P_A(p[A,b])
+\end{aligned}$$
+
+<!--- Until here we should write the introduction rules with \beta explicitly --->
 
 ---
 
@@ -314,7 +368,7 @@ Universe contains the _codes_ for types rather than the types itself. A type $A$
 
 ---
 
-## Definition of $U_0$
+## Definition of $(U_0, T_0)$
 
 Goal: Use our induction-recursion framework to construct the first Tarski universe $(U_0, T_0)$.
 
@@ -326,7 +380,7 @@ We need
 
 ---
 
-## $U_0$ Formation rules
+## $(U_0, T_0)$ Formation rules
 
 $$
 \begin{aligned}
@@ -411,12 +465,12 @@ $$
 
 <!--- Dropping the parameters eases the notation quite a bit. --->
 
----
-
-## Palmgren's Constructions
+<!-- ## Palmgren's Constructions
 
 See 
-Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics.
+Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics. -->
+
+---
 
 ## Super Universes
 
