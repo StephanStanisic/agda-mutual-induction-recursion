@@ -153,6 +153,8 @@ $$
 \end{aligned}
 $$
 
+<!--- Here we require that \psi[A,a] is a type under the assumptions A :: \sigma and a :: \alpha[A] --->
+
 . . .
 
 $$
@@ -235,7 +237,7 @@ Here $b' : \beta'$ and $u' : (x' :: \xi')P(p'[x'])$ are non-recursive and recurs
 
 Dependence on earlier recursive premise can only happen through application of $f$, that is
 $$
-b : \beta[\ldots,b',\ldots,u',\ldots]
+\beta[\ldots,b',\ldots,u',\ldots]
 $$
 must be of the form
 $$
@@ -306,7 +308,7 @@ $3$ premises of which only the second one is recursive.
 <!--- Very lonnngggg --->
 - $b : A$, non-recursive, $\beta = A$.
 - $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
-- $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through the $\on{Fresh}$ function), $\beta[b,u] = \on{Fresh}(u,b)$. 
+- $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta[b,u] = \hat{\beta}[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
 
 ---
 
@@ -555,7 +557,7 @@ Palmgren, E. (1991). Fixed point operators, inductive definitions and universes 
 
 ## Super Universes
 
-Super universe $U_{\infty}$ is the closure of the universe next universe operator **and** all other type formers.
+Super universe $U_{\infty}$ is the closure of the next universe operator **and** all other type formers.
 
 Formation Rules:
 $$
