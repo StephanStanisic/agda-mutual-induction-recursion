@@ -235,7 +235,7 @@ $$
 $$
 Here $b' : \beta'$ and $u' : (x' :: \xi')P(p'[x'])$ are non-recursive and recursive earlier premises respectively.
 
-Dependence on earlier recursive premise can only happen through application of $f$, that is
+Dependence on earlier recursive premise should only happen through application of $f$, that is
 $$
 \beta[\ldots,b',\ldots,u',\ldots]
 $$
@@ -251,7 +251,7 @@ $$
 ## General Schema : Introduction Rules
 
 $$
-\textit{intro} : \cdots (b : \beta)\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+\textit{intro} : \;\; \cdots \;\;  (b : \beta)\;\;\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
 $$
 
 where
@@ -262,29 +262,6 @@ is a small type in the context
 $$
 (\ldots, b':\beta',\ldots, v' : (x' :: \xi')\psi[p'[x']], \ldots)
 $$
-
----
-
-## General Schema : Introduction Rules
-
-$$
-\textit{intro} : \cdots (b : \beta)\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
-$$
-
-$$
-\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
-$$
-
-**Note**: Removing the dependence of $\beta,\xi,p$ and $q$ on earlier recursive terms yield the introduction rules we saw in an earlier presentation:
-
-$$\begin{aligned}
-intro:  &\; (A :: \sigma) \\
-        &\; (b :: \beta[A]) \\
-        &\; (u :: \gamma[A,b]) \\
-        &\;P_A(p[A,b])
-\end{aligned}$$
-
-<!--- Until here we should write the introduction rules with \beta explicitly --->
 
 ---
 
@@ -309,6 +286,27 @@ $3$ premises of which only the second one is recursive.
 - $b : A$, non-recursive, $\beta = A$.
 - $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
 - $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta[b,u] = \hat{\beta}[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
+
+---
+
+## General Schema : Introduction Rules
+
+$$
+\textit{intro} : \;\; \cdots \;\; (b : \beta)\;\;\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+$$
+
+<!-- $$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$ -->
+
+**Note**: Removing the dependence of $\beta,\xi,p$ and $q$ on earlier recursive terms yield the introduction rules we saw in an earlier presentation:
+
+$$\begin{aligned}
+intro:  &\; (A :: \sigma) \\
+        &\; (b :: \beta[A]) \\
+        &\; (u :: \gamma[A,b]) \\
+        &\;P_A(p[A,b])
+\end{aligned}$$
 
 ---
 
@@ -379,7 +377,8 @@ using $P$-recursion.
 Elimination:
 $$
 g(q,\textit{intro}(\ldots,b,\ldots,u,\ldots)) = e'(\ldots,b,\ldots, u, (x)g(p[x], u(x)), \ldots)
-$$
+$$ 
+<!--- Hier ontbreekt een type, maar die ontbreekt oook in Dybjers geweldige paper :) --->
 in the context
 $$
 (\ldots,b: \beta, \ldots,u:(x::\xi)P(p[x]),\ldots)
@@ -403,8 +402,6 @@ $$
   \on{length}(\on{cons(b, u, H)}) &= S(\on{length}(u))
 \end{aligned}
 $$
-
-<!--- Typing rule for length --->
 
 # Tarski Universe Construction
 
@@ -485,25 +482,26 @@ $$
 
 ## $(U_0, T_0)$ Equality rules
 
-Reminder: 
-
-$$
-\begin{aligned}
-\pi_0 : (u: U_0)(u': (x : T_0(u)) U_0)U_0
-\end{aligned}
-$$
-
 $$
 \begin{aligned}
 T_0(\pi_0(u, u')) = \Pi(T_0(u), (x)T_0(u'(x)))
 \end{aligned}
 $$
 
-<!--- ie. $T_0$ on $\pi_0(u, u')$ returns the dependent function types from $T_0(u)$ to $T_0(u')$ where $u'$ depends on $x : T_0(u)$.
-
+Remember: 
 $$
-\Pi\;x:A,B(x)
-$$ --->
+\begin{aligned}
+\pi_0 : (u: U_0)(u': (x : T_0(u)) U_0)U_0
+\end{aligned}
+$$
+
+. . .
+
+$$ \Pi x : A . B $$
+where
+$$ A = T_0(u) $$
+and
+$$ B = T_0(u'(x)) $$
 
 ---
 
