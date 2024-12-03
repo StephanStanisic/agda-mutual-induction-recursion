@@ -41,16 +41,11 @@ $f: D \to R$
 Let's say we are defining a little expression language. 
 
 ```coq
-Inductive Typ : Set :=
-| t_nat
-| t_bool
-| t_unit.
-
-Inductive Exp : Typ -> Set :=
-| intro_bool : bool -> Exp t_bool
-| intro_nat  : nat -> Exp t_nat
-| ifthenelse : Exp t_bool -> Exp t_nat -> Exp t_nat -> Exp t_nat
-| lt         : Exp t_nat  -> Exp t_nat -> Exp t_bool.
+Inductive Exp : Set -> Set :=
+| add        : Exp nat  -> Exp nat -> Exp nat
+| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
+| lt         : Exp nat  -> Exp nat -> Exp bool
+| printf     : Exp str  -> ?         -> Exp unit.
 ```
 
 ## printf
@@ -74,17 +69,11 @@ Data types à la carte (Swierstra, 2008)
 So we add printf in our expression type, but what do we put into the hole?
 
 ```coq
-Inductive Typ : Set :=
-| t_nat
-| t_bool
-| t_unit.
-
-Inductive Exp : Typ -> Set :=
-| intro_bool : bool -> Exp t_bool
-| intro_nat  : nat -> Exp t_nat
-| ifthenelse : Exp t_bool -> Exp t_nat -> Exp t_nat -> Exp t_nat
-| lt         : Exp t_nat  -> Exp t_nat -> Exp t_bool
-| printf     : Exp t_str  -> ?         -> Exp t_unit.
+Inductive Exp : Set -> Set :=
+| add        : Exp nat  -> Exp nat -> Exp nat
+| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
+| lt         : Exp nat  -> Exp nat -> Exp bool
+| printf     : Exp str  -> ?       -> Exp unit.
 ```
 
 ## Generating the type of printf
@@ -94,14 +83,14 @@ Inductive Exp : Set -> Set :=
 | add        : Exp nat  -> Exp nat -> Exp nat
 | ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
 | lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : (n : string) -> printftype n -> Exp unit
-where
+| printf     : forall n : string, printftype n -> Exp unit
+with
 Fixpoint printftype (s : string) : Exp :=
   match s with
   | "%d" ++ xs => prod (Exp nat) (printftype xs)
   | "%b" ++ xs => prod (Exp bool) (printftype xs)
   | String _ xs => printftype xs
-  | _ => Exp unit
+  | EmptyString => Exp unit
   end.
 ```
 
