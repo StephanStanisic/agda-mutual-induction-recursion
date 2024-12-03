@@ -8,7 +8,6 @@ aspectratio: 169
 header-includes: |
     \newcommand{\set}{\operatorname*{set}}
     \newcommand{\on}[1]{\operatorname*{#1}}
-    \usepackage{minted}
 mainfont: Open Sans
 mainfontoptions: Scale=0.8
 sansfont: Open Sans
@@ -310,7 +309,7 @@ $$
 ## General Schema: Equality Rules
 
 $$
-f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots) : \psi[q]
+f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots)
 $$
 in the context
 $$
@@ -328,7 +327,7 @@ $$
 ## General Schema : Equality Rules
 
 $$
-f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots) : \psi[q]
+f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots)
 $$
 
 <!--
