@@ -18,6 +18,8 @@
               nixpkgs-fmt
               coq
               coqPackages_8_19.coq-lsp
+              python3
+              pipenv
             ];
             buildInputs = with pkgs; [
               (agda.withPackages (ps: [

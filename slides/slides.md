@@ -7,6 +7,8 @@ theme: metropolis
 aspectratio: 169
 header-includes: |
     \newcommand{\set}{\operatorname*{set}}
+    \newcommand{\on}[1]{\operatorname*{#1}}
+    \usepackage{minted}
 mainfont: Open Sans
 mainfontoptions: Scale=0.8
 sansfont: Open Sans
@@ -17,17 +19,13 @@ monofontoptions: Scale=0.8
 
 ## Contents
 
-* Similtaneous induction-recursion
-* General Scheme
+* What is simultaneous induction-recursion?
+* General schema
 * Examples
 
-# The basics
+# What is simultaneous induction-recursion?
 
 ## Induction-Recursion
-
-<!--- Should we also address the fact that when doing a normal inductive definition we need strict positivity
-and when doing a normal recursive definition we need structural recusion for guaranteed termination
---->
 
 Basic Idea: Define a function and its domain at the **same** time.
 
@@ -44,8 +42,7 @@ Let's say we are defining a little expression language.
 Inductive Exp : Set -> Set :=
 | add        : Exp nat  -> Exp nat -> Exp nat
 | ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
-| lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : Exp str  -> ?         -> Exp unit.
+| lt         : Exp nat  -> Exp nat -> Exp bool.
 ```
 
 ## printf
@@ -73,7 +70,7 @@ Inductive Exp : Set -> Set :=
 | add        : Exp nat  -> Exp nat -> Exp nat
 | ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
 | lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : Exp str  -> ?       -> Exp unit.
+| printf     : string   -> ?       -> Exp unit.
 ```
 
 ## Generating the type of printf
@@ -85,7 +82,7 @@ Inductive Exp : Set -> Set :=
 | lt         : Exp nat  -> Exp nat -> Exp bool
 | printf     : forall n : string, printftype n -> Exp unit
 with
-Fixpoint printftype (s : string) : Exp :=
+Fixpoint printftype (s : string) : Set :=
   match s with
   | "%d" ++ xs => prod (Exp nat) (printftype xs)
   | "%b" ++ xs => prod (Exp bool) (printftype xs)
@@ -94,25 +91,24 @@ Fixpoint printftype (s : string) : Exp :=
   end.
 ```
 
-## DList
-
-Running Example: `DList` (**D**istinct **List**):
-
-```
-A : set
-# : A -> A -> set
-```
-
----
-
 ## Induction-Recursion
 
-Example: `DList` (**D**istinct **List**):
-
-```agda
-S    : set
-diff : (S)(S)set
+```coq
+Inductive DList (A : Set) : Set :=
+| nil : DList A
+| cons : forall (a : A) (as : DList), fresh a as -> DList A
+with
+Fixpoint fresh (list : DList A) (a : A) : Set :=
+  match list with
+  | nil => true
+  | cons x xs p => x != a /\ fresh xs a
+  end.
 ```
+
+<!--
+Note that we'll have A implicit and != as well in the remainder of the slides.
+-->
+
 
 <!--- Intuitively: At a certain stage we may have constructed some u: Dlist since fresh is defined by dlist-recursion we already know what it menas for an elem b: S to be fresh wrt u. That is, we know what b' is as a proof. hence, it makes sense to construct cons.
 **Note**: Other definition of DList are possible (eg. list with nodup proof). But this definition maybe feels natural and is distinct by construction. --->
@@ -121,8 +117,6 @@ diff : (S)(S)set
 
 ## General Schema
 
-What do we need?
-
 - Formation Rules
 - Introduction Rules
 - Equality Rules
@@ -130,21 +124,25 @@ What do we need?
 
 ## General Schema : Formation Rules
 
-(Note we can also parametrize, we can show this, but the notation is very long.)
+<!--- Note: Following the paper, these definitions consider one inductive type and one recursive function. Can be generalised to more --->
 
 Formation Rules:
 
 $$
 \begin{aligned}
-    P &: (a :: \alpha) \\
-    f &: (a :: \alpha)(c : P(a))\psi[a]
+    P &: (A :: \sigma)(a :: \alpha[A])\set \\
+    f &: \underbrace{(A :: \sigma)}_{\text{parameters}}\underbrace{(a :: \alpha[A])}_{\text{indices}}(c : P(A,a))\psi[A,a]
 \end{aligned}
 $$
 
+<!--- Here we require that \psi[A,a] is a type under the assumptions A :: \sigma and a :: \alpha[A] --->
+
+. . .
+
 $$
 \begin{aligned}
-DList &: \set \\
-Fresh &: (c : DList)(a : A)\set
+\on{DList} &: (A : \set)(\neq \; : (A)(A)\set)\set \\
+\on{Fresh} &: (A : \set)(\neq \; : (A)(A)\set)(c : \on{DList})(a : A)\set
 \end{aligned}
 $$
 
@@ -152,25 +150,40 @@ $$
 
 ## General Schema : Formation Rules
 
-(Note we can also parametrize, we can show this, but the notation is very long.)
-
 Formation Rules:
 
 $$
 \begin{aligned}
-    P &: (a :: \alpha) \\
-    f &: (a :: \alpha)(c : P(a))\psi[a]
+    P &: (A :: \sigma)(a :: \alpha[A])\set \\
+    f &: (A :: \sigma)(a :: \alpha[A])(c : P(A,a))\psi[A,a]
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
-\underbrace{DList}_{P} &: \set \\
-\underbrace{Fresh}_{f} &: \underbrace{(c : DList)}_{c}\underbrace{(a : A)\set}_{\psi[a]}
+\underbrace{\on{DList}}_{P} &: \underbrace{(A : \set)(\neq \; : (A)(A)\set)}_{A}\set \\
+\underbrace{\on{Fresh}}_{f} &: \underbrace{(A : \set)(\neq \; : (A)(A)\set)}_{A}\underbrace{(c : \on{DList} A)}_{c}\underbrace{(a : A)\set}_{\psi[A,a]}
 \end{aligned}
 $$
 
-*Note*: $\alpha$ is the empty sequence.
+<!-- Here \psi is the type of predicates over elements in the set A under consideration -->
+
+*Note*: $\alpha[A]$ is the empty sequence.
+
+---
+
+## General Schema : Formation Rules
+
+The previous slide showed explicit parameters, in the rest of the presentation we consider parameters to be implicit.
+
+Resulting in:
+
+$$
+\begin{aligned}
+    P &: (a :: \alpha)\set \\
+    f &: (a :: \alpha)(c : P(a))\psi[a]
+\end{aligned}
+$$
 
 ---
 
@@ -179,24 +192,103 @@ $$
 Introduction Rules:
 
 $$
-\textit{intro} : \cdots (b : \beta) \cdots (u : (x :: \xi)P(p[x])) \cdots P(q)
+\textit{intro} : \;\; \cdots \;\; (b : \beta)\;\; \cdots \;\; (u : (x :: \xi)P(p[x])) \;\; \cdots \;\; P(q)
 $$
-
----
 
 ## General Schema : Introduction Rules
 
 Introduction Rules:
 
 $$
-\textit{intro} : \cdots \underbrace{(b : \beta)}_{\text{non-recursive}} \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots \;\; P(q)
+\textit{intro} : \;\; \cdots \;\; \underbrace{(b : \beta)}_{\text{non-recursive}} \;\; \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots \;\; P(q)
 $$
 
 <!--- dots here indicate that there may be $0$ or more. 
 
-NOTE: "they may appear in any order".
+NOTE: "they may appear in any order". --->
 
-Remark: Removing the dependency of $\beta,\xi,p$ and $q$ on previous recursive premises -> recover schema from prev. presentation. --->
+---
+
+## General Schema : Introduction Rules
+
+Typing criteria for $\xi, p$ and $q$ are analogous.
+$$
+\textit{intro} : \;\; \cdots \;\; (b : \beta[\ldots,b',\ldots,u',\ldots]) \;\; \cdots (u : (x :: \xi)P(p[x])) \cdots P(q)
+$$
+Here $b' : \beta'$ and $u' : (x' :: \xi')P(p'[x'])$ are non-recursive and recursive earlier premises respectively.
+
+Dependence on earlier recursive premise should only happen through application of $f$, that is
+$$
+\beta[\ldots,b',\ldots,u',\ldots]
+$$
+must be of the form
+$$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$
+
+<!-- (x')f(p'[x'],u'(x')) is an abstraction?  -->
+
+---
+
+## General Schema : Introduction Rules
+
+$$
+\textit{intro} : \;\; \cdots \;\;  (b : \beta)\;\;\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+$$
+
+where
+$$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$
+is a small type in the context
+$$
+(\ldots, b':\beta',\ldots, v' : (x' :: \xi')\psi[p'[x']], \ldots)
+$$
+
+---
+
+## General Schema : Introduction Rules
+
+Introduction Rules:
+$$
+\textit{intro} : \cdots (b : \beta) \cdots (u : (x :: \xi)P(p[x])) \cdots P(q)
+$$
+
+Example:
+$$
+\begin{aligned}
+\on{nil}  &: \on{DList} \\
+\on{cons} &: (b : A)(u : \on{DList})(H: \on{Fresh}(u,b))\on{DList}
+\end{aligned}
+$$
+
+$3$ premises of which only the second one is recursive.
+
+<!--- Very lonnngggg --->
+- $b : A$, non-recursive, $\beta = A$.
+- $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
+- $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta[b,u] = \hat{\beta}[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
+
+---
+
+## General Schema : Introduction Rules
+
+$$
+\textit{intro} : \;\; \cdots \;\; (b : \beta)\;\;\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
+$$
+
+<!-- $$
+\hat{\beta}[\ldots, b', \ldots, (x')f(p'[x'],u'(x')),\ldots]
+$$ -->
+
+**Note**: Removing the dependence of $\beta,\xi,p$ and $q$ on earlier recursive terms yield the introduction rules we saw in an earlier presentation:
+
+$$\begin{aligned}
+intro:  &\; (A :: \sigma) \\
+        &\; (b :: \beta[A]) \\
+        &\; (u :: \gamma[A,b]) \\
+        &\;P_A(p[A,b])
+\end{aligned}$$
 
 ---
 
@@ -215,27 +307,10 @@ $$
 
 ---
 
-## General Schema : Elimination Rules
-
-Example: Length of DList;
-
-<!--- Dick: In general we should introduce some notation at the start of the presentation to make sure that everyone know what we are talking about when saying things like P and f --->
-Assuming $P$ (inductive type) and $f$ (recursive function), may define 
+## General Schema: Equality Rules
 
 $$
-f': (a :: \alpha)(c : P(a))\psi'[a,c]
-$$
-
-<!--- \psi depends on a and c --->
-using $P$-recursion.
-
----
-
-## General Schema: Elimination Rules:
-
-Elimination:
-$$
-f'(q,\textit{intro}(\ldots,b,\ldots,u,\ldots)) = e'(\ldots,b,\ldots, u, (x)f'(p[x], u(x)), \ldots)
+f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots) : \psi[q]
 $$
 in the context
 $$
@@ -243,38 +318,118 @@ $$
 $$
 where 
 $$
-e'(\ldots,b, \ldots, u,v,\ldots) : \psi'[q,\textit{intro}(\ldots,b,\ldots,u,\ldots)]
+e(\ldots,b, \ldots, v,\ldots) : \psi[q]
 $$
 in the context
 $$
-(\ldots, b,\ldots, u:(x :: \xi )P(p[x]), v: (x :: \xi)\psi'[p[x], u(x)],\ldots)
+(\ldots, b : \beta,\ldots, v:(x :: \xi )\psi[p[x]],\ldots)
 $$
 
-## Example:
+## General Schema : Equality Rules
 
-```
-length: (l : DList)ℕ
+$$
+f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots) : \psi[q]
+$$
 
-```
+<!--
+f = Fresh
+b = non rec. (a:A)
+u = recursive (DList)
+H = proof
 
+x : a
+
+
+-->
+
+Example:
+
+$$
+\begin{aligned}
+  f(\_, \pi_0(b, u)) &= e(b, u) \\
+  e(v, v') &= \Pi(v, v') \\
+  v &= T_0(\_,U_0) \\
+  v' &= (x)T_0(\_,U_0(x))(T_0 u)
+\end{aligned}
+$$
+
+## General Schema : Elimination Rules
+
+Let $P,f$ be a simultaneously defined inductive type $P$ with recursive function $f$.
+
+Then we can define a new function $g$
+$$
+g: (a :: \alpha)(c : P(a))\phi[a,c]
+$$
+using $P$-recursion.
+
+<!--- Exactly the same as the function f, but now \phi may depend on c instead of \psi which did not have this --->
+
+---
+
+## General Schema : Elimination Rules
+
+Elimination:
+$$
+g(q,\textit{intro}(\ldots,b,\ldots,u,\ldots)) = e'(\ldots,b,\ldots, u, (x)g(p[x], u(x)), \ldots)
+$$ 
+<!--- Hier ontbreekt een type, maar die ontbreekt oook in Dybjers geweldige paper :) --->
+in the context
+$$
+(\ldots,b: \beta, \ldots,u:(x::\xi)P(p[x]),\ldots)
+$$
+where 
+$$
+e'(\ldots,b, \ldots, u,v,\ldots) : \phi[q,\textit{intro}(\ldots,b,\ldots,u,\ldots)]
+$$
+in the context
+$$
+(\ldots, b : \beta,\ldots, u:(x :: \xi )P(p[x]), v: (x :: \xi)\phi[p[x], u(x)],\ldots)
+$$
+
+## General Schema : Elimination Rules
+
+Example:
+$$
+\begin{aligned}
+  \on{length} &: (c : \on{DList})\mathbb{N} \\
+  \on{length}(\on{nil}) &= 0 \\
+  \on{length}(\on{cons(b, u, H)}) &= S(\on{length}(u))
+\end{aligned}
+$$
 
 # Tarski Universe Construction
 
 ## Universes
 
-Russel style Universe, this is what we have seen during the Type Theory lectures. 
+* Russel style Universe:
+  
+  If $U$ denotes a universe, then a term $t : U$ is a type.
 
-If $U$ denotes a universe, then a term $t : U$ is a type.
+* Tarski style Universe:
 
-(syntactic) distinction between terms (elements of $U$) and types $t$ is lost.
+  Every universe consists of a set of _codes_ $U$ and a decoding function $T$ (sometimes also denoted as `el`).
+  
+  Universe is a pair $(U, T)$.
+
+<!-- (syntactic) distinction between terms (elements of $U$) and types $t$ is lost. -->
 
 ---
 
 ## Tarski Universe
 
-Maintains distinction.
+Example: Universe $(U,T)$ containing types for natural numbers and boolean values:
 
-How? Every universe consists of a set of _codes_ $U$ and a decoding function $T$ (sometimes also denoted with `el`).
+$$
+\begin{aligned}
+  \langle\textit{naturals}\rangle &: U \\
+  \langle\textit{booleans}\rangle &: U \\
+  T(\langle\textit{naturals}\rangle) &= \mathbb{N} \\
+  T(\langle\textit{booleans}\rangle) &= \mathbb{B} \\
+  3 &: \mathbb{N} \\
+  \on{True} &: \mathbb{B}
+\end{aligned}
+$$
 
 <!--- T maps elements of U to the associated type.
 
@@ -282,7 +437,7 @@ Universe contains the _codes_ for types rather than the types itself. A type $A$
 
 ---
 
-## Definition of $U_0$
+## Definition of $(U_0, T_0)$
 
 Goal: Use our induction-recursion framework to construct the first Tarski universe $(U_0, T_0)$.
 
@@ -294,7 +449,7 @@ We need
 
 ---
 
-## $U_0$ Formation rules
+## $(U_0, T_0)$ Formation rules
 
 $$
 \begin{aligned}
@@ -309,7 +464,7 @@ $$
 
 ## $(U_0, T_0)$ Introduction rules
 
-We would have a constructor (introduction rule) for every type former in the theory.
+We need a constructor (introduction rule) for every type former in the theory.
 
 Restricting ourselves to $\Pi$-types:
 $$
@@ -322,31 +477,28 @@ $$
 
 ## $(U_0, T_0)$ Equality rules
 
-Reminder: 
-
-$$
-\begin{aligned}
-\pi_0 : (u: U_0)(u': (x : T_0(u)) U_0)U_0
-\end{aligned}
-$$
-
 $$
 \begin{aligned}
 T_0(\pi_0(u, u')) = \Pi(T_0(u), (x)T_0(u'(x)))
 \end{aligned}
 $$
 
-<!--- ie. $T_0$ on $\pi_0(u, u')$ returns the dependent function types from $T_0(u)$ to $T_0(u')$ where $u'$ depends on $x : T_0(u)$.
-
+Remember: 
 $$
-\Pi\;x:A,B(x)
-$$ --->
+\begin{aligned}
+\pi_0 : (u: U_0)(u': (x : T_0(u)) U_0)U_0
+\end{aligned}
+$$
+
+. . .
+
+$$ \Pi x : T_0(u) . T_0(u'(x)) $$
 
 ---
 
 ## Further universes
 
-Second universe ($U_1$).
+Second universe $U_1$.
 
 - Formation Rules:
 $$\begin{aligned}
@@ -358,17 +510,23 @@ T_1 &: (U_1)\set
 
 - Introduction Rules:
 
-where we now also add $U_0$ formation.
+  Similar as for $(U_0,T_0)$, but we now also add $U_0$ formation.
+$$\begin{aligned}
+  u_{01} &: U_1 \\
+  T_1(u_{01}) &= U_0 \\
+  T_1(\pi_1(u, u')) &= \Pi(T_1(u), (x)T_1(u'(x))) \\
+  t_{01} &: U_0(U_1) \\
+  T_1(t_{01}(b)) &= T_0(b)
+\end{aligned}$$
+Repeat for $(U_2,T_2), (U_3, T_3), \ldots$
 
-. . .
-
-Test
+<!--- This t_01 is a constructor for U_1 --->
 
 ---
 
 ## Internalizing Universe Construction
 
-We can internalize the construction of universes using a *similtaneous inductive-recursive* scheme.
+We can internalize the construction of universes using a *simultaneous inductive-recursive* scheme.
 
 $$
 \begin{aligned}
@@ -379,16 +537,16 @@ $$
 
 <!--- Dropping the parameters eases the notation quite a bit. --->
 
----
-
-## Palmgren's Constructions
+<!-- ## Palmgren's Constructions
 
 See 
-Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics.
+Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics. -->
+
+---
 
 ## Super Universes
 
-Super universe $U_{\infty}$ is the closure of the universe next universe operator **and** all other type formers.
+Super universe $U_{\infty}$ is the closure of the next universe operator **and** all other type formers.
 
 Formation Rules:
 $$
@@ -408,3 +566,7 @@ $$ u_0 : U_{\infty}, $$
 $$ T_{\infty}(u_0) = U_0, $$
 $$ \operatorname*{NextU} : (u : U_{\infty})(u' : (T_{\infty}(u))U_{\infty})U_{\infty}, $$
 $$ T_{\infty}(\operatorname*{NextU}(u, u')) = \operatorname*{NextU}(T_{\infty}(u), (x)T_{\infty}(u'(x))) $$
+
+## {.standout}
+
+Questions?
