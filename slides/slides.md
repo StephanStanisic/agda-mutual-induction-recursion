@@ -289,6 +289,9 @@ intro:  &\; (A :: \sigma) \\
         &\;P_A(p[A,b])
 \end{aligned}$$
 
+<!--- because then f
+cannot appear in the introduction rules for P. --->
+
 ---
 
 ## General Schema : Equality Rules
@@ -495,9 +498,11 @@ $$ \Pi x : T_0(u) . T_0(u'(x)) $$
 
 ---
 
-## Further universes
+## Further Universes
 
-Second universe $U_1$.
+Second universe $(U_1, T_1)$.
+
+Analogous to $(U_0,T_0)$, but we now also add $U_0$ formation.
 
 - Formation Rules:
 $$\begin{aligned}
@@ -505,21 +510,23 @@ U_1 &: \set, \\
 T_1 &: (U_1)\set
 \end{aligned}$$
 
-. . .
-
-- Introduction Rules:
-
-  Similar as for $(U_0,T_0)$, but we now also add $U_0$ formation.
+- Introduction and Equality Rules:
 $$\begin{aligned}
+  \pi_1 &: (u: U_1)(u': (x : T_1(u)) U_1)U_1 \\
+  T_1(\pi_1(u, u')) &= \Pi(T_1(u), (x)T_1(u'(x))) \\
+  &\; \\
   u_{01} &: U_1 \\
   T_1(u_{01}) &= U_0 \\
-  T_1(\pi_1(u, u')) &= \Pi(T_1(u), (x)T_1(u'(x))) \\
+\end{aligned}$$
+
+## Further Universes
+
+<!--- This t_01 is a constructor for U_1 --->
+$$\begin{aligned}
   t_{01} &: U_0(U_1) \\
   T_1(t_{01}(b)) &= T_0(b)
 \end{aligned}$$
 Repeat for $(U_2,T_2), (U_3, T_3), \ldots$
-
-<!--- This t_01 is a constructor for U_1 --->
 
 ---
 
@@ -529,17 +536,47 @@ We can internalize the construction of universes using a *simultaneous inductive
 
 $$
 \begin{aligned}
-    \operatorname*{NextU} &: (U: \set)(T: (U)\set)\set, \\
-    \operatorname*{NextT} &: (U: \set)(T: (U)\set)(\operatorname*{NextU}(U, T))\set
+  P = \on{NextU} &: (U: \set)(T: (U)\set)\set, \\
+  f = \on{NextT} &: (U: \set)(T: (U)\set)(\on{NextU}(U, T))\set
 \end{aligned}
 $$
 
+---
+
+## Internalizing Universe Construction
+
+We can internalize the construction of universes using a *simultaneous inductive-recursive* scheme.
+
+$$
+\begin{aligned}
+  \on{NextU} &: \set, \\
+  \on{NextT} &: (\on{NextU})\set
+\end{aligned}
+$$
+
+Keep in mind, $U : \set$ and $T : (U)\set$ exist implicitly.
+
 <!--- Dropping the parameters eases the notation quite a bit. --->
 
-<!-- ## Palmgren's Constructions
+---
 
-See 
-Palmgren, E. (1991). Fixed point operators, inductive definitions and universes in Martin-Lof’s type theory (on). Uppsala University; Depart. of Mathematics. -->
+## Internalizing Universe Construction
+
+$$
+\begin{aligned}
+  \on{NextU} &: \set, \\
+  \on{NextT} &: (\on{NextU})\set
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+* &: \on{NextU} \\
+\on{NextT}(*) &= U \\
+t &: (b : U)\on{NextU} \\
+\on{NextT}(t(b)) &= T(b)
+\end{aligned}
+$$
 
 ---
 
@@ -565,6 +602,14 @@ $$ u_0 : U_{\infty}, $$
 $$ T_{\infty}(u_0) = U_0, $$
 $$ \operatorname*{NextU} : (u : U_{\infty})(u' : (T_{\infty}(u))U_{\infty})U_{\infty}, $$
 $$ T_{\infty}(\operatorname*{NextU}(u, u')) = \operatorname*{NextU}(T_{\infty}(u), (x)T_{\infty}(u'(x))) $$
+
+## Conclusion
+
+We showed:
+
+- The basic idea behind simultaneous induction-recursion.
+- A schema to construct simultaneous inductive-recursive definitions.
+- How to construct universes (and universe hierarchies) using induction-recursion.
 
 ## {.standout}
 
