@@ -507,7 +507,7 @@ Restricting ourselves to $\Pi$ and equality-types:
 $$
 \begin{aligned}
 \pi_0 &: (u: U_0)(u': (x : T_0(u)) U_0)U_0 \\
-eq_0 &: (U : U_0)(b,b' : T_0(u))U_0
+\text{eq}_0 &: (U : U_0)(b,b' : T_0(u))U_0
 \end{aligned}
 $$
 
@@ -518,14 +518,15 @@ $$
 $$
 \begin{aligned}
 T_0(\pi_0(u, u')) &= \Pi(T_0(u), (x)T_0(u'(x))) \\
-T_0(eq_0(u,b, b')) &= \on{Eq}(T_0(u), b, b')
+T_0(\text{eq}_0(u,b, b')) &= \on{Eq}(T_0(u), b, b')
 \end{aligned}
 $$
 
 Remember: 
 $$
 \begin{aligned}
-\pi_0 : (u: U_0)(u': (x : T_0(u)) U_0)U_0
+\pi_0 &: (u: U_0)(u': (x : T_0(u)) U_0)U_0 \\
+\text{eq}_0 &: (U : U_0)(b,b' : T_0(u))U_0
 \end{aligned}
 $$
 
