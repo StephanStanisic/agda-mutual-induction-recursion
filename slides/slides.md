@@ -296,11 +296,11 @@ $3$ premises of which only the second one is recursive.
 - $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
 - $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta[b,u] = \hat{\beta}[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
 
-<!--- . At a certain stage we may have constructed u: Dlist. Since Fresh
+\talknote{At a certain stage we may have constructed u: Dlist. Since Fresh
 is defined by Dlist-recursion, we already know what it means for an element b: A to
 be fresh with respect to u, that is, we know what a proof b': Fresh(u, b) is. Hence
 it makes sense to construct an element cons(b, u, b'). Moreover, we can define
-Fresh(cons(b, u, b')) in terms of the already constructed proposition Fresh --->
+Fresh(cons(b, u, b')) in terms of the already constructed proposition Fresh}
 
 ---
 
@@ -410,7 +410,7 @@ Elimination:
 $$
 g(q,\textit{intro}(\ldots,b,\ldots,u,\ldots)) = e'(\ldots,b,\ldots, u, (x)g(p[x], u(x)), \ldots)
 $$ 
-<!--- Hier ontbreekt een type, maar die ontbreekt oook in Dybjers geweldige paper :) --->
+
 in the context
 $$
 (\ldots,b: \beta, \ldots,u:(x::\xi)P(p[x]),\ldots)
