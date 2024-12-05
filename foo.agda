@@ -61,6 +61,16 @@ mutual
     T₀ (eq₀ u b b') = _≡_ {T₀ u} b b'
 
 mutual
+    data U₀ : Set where
+        π₀ : (u : U₀) → (u' : (x : T₀ u) → U₀) → U₀
+        eq₀ : (u : U₀) → (b b' : T₀ u) → U₀
+        t₀₁
+    
+    T₀ : U₀ → Set
+    T₀ (π₀ u u') = (x : T₀ u) → T₀ (u' x)
+    T₀ (eq₀ u b b') = _≡_ {T₀ u} b b'
+
+mutual
     data U (n : ℕ) : Set where
         π : (u : U n) → (u' : (x : T n u) → U n) → U n
         eq : (u : U n) → (b b' : T n u) → U n
