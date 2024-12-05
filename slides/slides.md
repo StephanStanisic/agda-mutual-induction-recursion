@@ -8,6 +8,9 @@ aspectratio: 169
 header-includes: |
     \newcommand{\set}{\operatorname*{set}}
     \newcommand{\on}[1]{\operatorname*{#1}}
+    \usepackage{minted}
+    \usepackage[overridenote]{pdfpc}
+    \newcommand{\talknote}[1]{{\pdfpcnote{- #1}}}
 mainfont: Open Sans
 mainfontoptions: Scale=0.8
 sansfont: Open Sans
@@ -20,7 +23,7 @@ monofontoptions: Scale=0.8
 
 * What is simultaneous induction-recursion?
 * General schema
-* Examples
+* Tarski Universe Construction
 
 # What is simultaneous induction-recursion?
 
@@ -82,9 +85,37 @@ Inductive Exp : Set -> Set :=
 | printf     : forall n : string, printftype n -> Exp unit
 with
 Fixpoint printftype (s : string) : Set :=
+  ?
+```
+
+## Generating the type of printf
+
+```coq
+Inductive Exp : Set -> Set :=
+| add        : Exp nat  -> Exp nat -> Exp nat
+| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
+| lt         : Exp nat  -> Exp nat -> Exp bool
+| printf     : forall n : string, printftype n -> Exp unit
+with
+Fixpoint printftype (s : string) : Set :=
   match s with
   | "%d" ++ xs => prod (Exp nat) (printftype xs)
-  | "%b" ++ xs => prod (Exp bool) (printftype xs)
+  ?
+  end.
+```
+
+## Generating the type of printf
+
+```coq
+Inductive Exp : Set -> Set :=
+| add        : Exp nat  -> Exp nat -> Exp nat
+| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
+| lt         : Exp nat  -> Exp nat -> Exp bool
+| printf     : forall n : string, printftype n -> Exp unit
+with
+Fixpoint printftype (s : string) : Set :=
+  match s with
+  | "%d" ++ xs => prod (Exp nat) (printftype xs)
   | String _ xs => printftype xs
   | EmptyString => Exp unit
   end.
@@ -95,19 +126,16 @@ Fixpoint printftype (s : string) : Set :=
 ```coq
 Inductive DList (A : Set) : Set :=
 | nil : DList A
-| cons : forall (a : A) (as : DList), fresh a as -> DList A
+| cons : forall (b : A) (u : DList), fresh u b -> DList A
 with
-Fixpoint fresh (list : DList A) (a : A) : Set :=
-  match list with
+Fixpoint fresh (as : DList A) (a : A) : Set :=
+  match as with
   | nil => true
   | cons x xs p => x != a /\ fresh xs a
   end.
 ```
 
-<!--
-Note that we'll have A implicit and != as well in the remainder of the slides.
--->
-
+\talknote{Note that we'll have A implicit and != as well in the remainder of the slides.}
 
 <!--- Intuitively: At a certain stage we may have constructed some u: Dlist since fresh is defined by dlist-recursion we already know what it menas for an elem b: S to be fresh wrt u. That is, we know what b' is as a proof. hence, it makes sense to construct cons.
 **Note**: Other definition of DList are possible (eg. list with nodup proof). But this definition maybe feels natural and is distinct by construction. --->
@@ -123,7 +151,7 @@ Note that we'll have A implicit and != as well in the remainder of the slides.
 
 ## General Schema : Formation Rules
 
-<!--- Note: Following the paper, these definitions consider one inductive type and one recursive function. Can be generalised to more --->
+\talknote{Note: Following the paper, these definitions consider one inductive type and one recursive function. Can be generalised to more}
 
 Formation Rules:
 
@@ -134,9 +162,10 @@ $$
 \end{aligned}
 $$
 
-<!--- Here we require that \psi[A,a] is a type under the assumptions A :: \sigma and a :: \alpha[A] --->
 
 . . .
+
+\talknote{Here we require that \psi[A,a] is a type under the assumptions A :: \sigma and a :: \alpha[A]}
 
 $$
 \begin{aligned}
@@ -165,7 +194,7 @@ $$
 \end{aligned}
 $$
 
-<!-- Here \psi is the type of predicates over elements in the set A under consideration -->
+\talknote{Here \psi is the type of predicates over elements in the set A under consideration}
 
 *Note*: $\alpha[A]$ is the empty sequence.
 
@@ -202,9 +231,8 @@ $$
 \textit{intro} : \;\; \cdots \;\; \underbrace{(b : \beta)}_{\text{non-recursive}} \;\; \cdots \;\; \underbrace{(u : (x :: \xi)P(p[x]))}_{\text{recursive}} \;\; \cdots \;\; P(q)
 $$
 
-<!--- dots here indicate that there may be $0$ or more. 
-
-NOTE: "they may appear in any order". --->
+\talknote{dots here indicate that there may be $0$ or more.} 
+\talknote{NOTE: "they may appear in any order".}
 
 ---
 
@@ -289,8 +317,7 @@ intro:  &\; (A :: \sigma) \\
         &\;P_A(p[A,b])
 \end{aligned}$$
 
-<!--- because then f
-cannot appear in the introduction rules for P. --->
+\talknote{because then f cannot appear in the introduction rules for P.}
 
 ---
 
@@ -333,26 +360,28 @@ $$
 f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots)
 $$
 
-<!--
+\talknote{
 f = Fresh
 b = non rec. (a:A)
 u = recursive (DList)
 H = proof
 
 x : a
-
-
--->
+}
 
 Example:
 
 $$
 \begin{aligned}
-  f(\_, \pi_0(b, u)) &= e(b, u) \\
-  e(v, v') &= \Pi(v, v') \\
-  v &= T_0(\_,U_0) \\
-  v' &= (x)T_0(\_,U_0(x))(T_0 u)
+  \on{Fresh}(\on{nil}, a) &= (a)\top \\
+  \on{Fresh}(\on{cons}(b, u, H), a) &= (a)(b \neq a \land \on{Fresh}(u,a))
 \end{aligned}
+% \begin{aligned}
+%   f(\_, \pi_0(b, u)) &= e(b, u) \\
+%   e(v, v') &= \Pi(v, v') \\
+%   v &= T_0(\_,U_0) \\
+%   v' &= (x)T_0(\_,U_0(x))(T_0 u)
+% \end{aligned}
 $$
 
 ## General Schema : Elimination Rules
@@ -365,7 +394,7 @@ g: (a :: \alpha)(c : P(a))\phi[a,c]
 $$
 using $P$-recursion.
 
-<!--- Exactly the same as the function f, but now \phi may depend on c instead of \psi which did not have this --->
+\talknote{Exactly the same as the function f, but now \phi may depend on c instead of \psi which did not have this}
 
 ---
 
@@ -414,7 +443,7 @@ $$
   
   Universe is a pair $(U, T)$.
 
-<!-- (syntactic) distinction between terms (elements of $U$) and types $t$ is lost. -->
+\talknote{(syntactic) distinction between terms (elements of $U$) and types $t$ is lost.}
 
 ---
 
@@ -433,9 +462,9 @@ $$
 \end{aligned}
 $$
 
-<!--- T maps elements of U to the associated type.
+\talknote{T maps elements of U to the associated type.}
 
-Universe contains the _codes_ for types rather than the types itself. A type $A$ is not an element of $U$ rather, $\exists u : U$ such that $T(u) = A$. --->
+\talknote{Universe contains the _codes_ for types rather than the types itself. A type $A$ is not an element of $U$ rather, $\exists u : U$ such that $T(u) = A$.}
 
 ---
 
@@ -556,7 +585,7 @@ $$
 
 Keep in mind, $U : \set$ and $T : (U)\set$ exist implicitly.
 
-<!--- Dropping the parameters eases the notation quite a bit. --->
+\talknote{Dropping the parameters eases the notation quite a bit.}
 
 ---
 
