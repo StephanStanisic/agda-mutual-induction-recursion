@@ -268,6 +268,12 @@ $3$ premises of which only the second one is recursive.
 - $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
 - $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta[b,u] = \hat{\beta}[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
 
+<!--- . At a certain stage we may have constructed u: Dlist. Since Fresh
+is defined by Dlist-recursion, we already know what it means for an element b: A to
+be fresh with respect to u, that is, we know what a proof b': Fresh(u, b) is. Hence
+it makes sense to construct an element cons(b, u, b'). Moreover, we can define
+Fresh(cons(b, u, b')) in terms of the already constructed proposition Fresh --->
+
 ---
 
 ## General Schema : Introduction Rules
@@ -468,10 +474,11 @@ $$
 
 We need a constructor (introduction rule) for every type former in the theory.
 
-Restricting ourselves to $\Pi$-types:
+Restricting ourselves to $\Pi$ and equality-types:
 $$
 \begin{aligned}
-\pi_0 : (u: U_0)(u': (x : T_0(u)) U_0)U_0
+\pi_0 &: (u: U_0)(u': (x : T_0(u)) U_0)U_0 \\
+eq_0 &: (U : U_0)(b,b' : T_0(u))U_0
 \end{aligned}
 $$
 
@@ -481,7 +488,8 @@ $$
 
 $$
 \begin{aligned}
-T_0(\pi_0(u, u')) = \Pi(T_0(u), (x)T_0(u'(x)))
+T_0(\pi_0(u, u')) &= \Pi(T_0(u), (x)T_0(u'(x))) \\
+T_0(eq_0(u,b, b')) &= \on{Eq}(T_0(u), b, b')
 \end{aligned}
 $$
 
