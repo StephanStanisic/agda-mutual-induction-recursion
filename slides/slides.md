@@ -11,6 +11,7 @@ header-includes: |
     \usepackage{minted}
     \usepackage[overridenote]{pdfpc}
     \newcommand{\talknote}[1]{{\pdfpcnote{- #1}}}
+    \usepackage[tophat]{realhats}
 mainfont: Open Sans
 mainfontoptions: Scale=0.8
 sansfont: Open Sans
@@ -25,9 +26,13 @@ monofontoptions: Scale=0.8
 * General schema
 * Tarski Universe Construction
 
+
+
 # What is simultaneous induction-recursion?
 
 ## Induction-Recursion
+
+
 
 Basic Idea: Define a function and its domain at the **same** time.
 
@@ -36,18 +41,22 @@ $f: D \to R$
 - The function definition is recursive by induction on $D$,
 - and the datatype $D$ depends on $f$.
 
-## Motivation
+## Motivating Example
+
+
 
 Let's say we are defining a little expression language. 
 
 ```coq
-Inductive Exp : Set -> Set :=
-| add        : Exp nat  -> Exp nat -> Exp nat
-| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
-| lt         : Exp nat  -> Exp nat -> Exp bool.
+Inductive Exp : Set → Set :=
+| add        : Exp nat  → Exp nat → Exp nat
+| ifthenelse : Exp bool → Exp nat → Exp nat → Exp nat
+| lt         : Exp nat  → Exp nat → Exp bool.
 ```
 
 ## printf
+
+
 
 Now we would like to add `printf` as a function that is callable from our little expression language. `printf` is a popular function from C for formatting strings:
 
@@ -65,24 +74,29 @@ Data types à la carte (Swierstra, 2008)
 
 ## Updating our language
 
+
+\talknote{We can't fill the hole without something inductive recursive.}
+
 So we add printf in our expression type, but what do we put into the hole?
 
 ```coq
-Inductive Exp : Set -> Set :=
-| add        : Exp nat  -> Exp nat -> Exp nat
-| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
-| lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : string   -> ?       -> Exp unit.
+Inductive Exp : Set → Set :=
+| add        : Exp nat  → Exp nat → Exp nat
+| ifthenelse : Exp bool → Exp nat → Exp nat → Exp nat
+| lt         : Exp nat  → Exp nat → Exp bool
+| printf     : string   → ?       → Exp unit.
 ```
 
 ## Generating the type of printf
 
+
+
 ```coq
-Inductive Exp : Set -> Set :=
-| add        : Exp nat  -> Exp nat -> Exp nat
-| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
-| lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : forall n : string, printftype n -> Exp unit
+Inductive Exp : Set → Set :=
+| add        : Exp nat  → Exp nat → Exp nat
+| ifthenelse : Exp bool → Exp nat → Exp nat → Exp nat
+| lt         : Exp nat  → Exp nat → Exp bool
+| printf     : forall n : string, printftype n → Exp unit
 with
 Fixpoint printftype (s : string) : Set :=
   ?
@@ -90,12 +104,14 @@ Fixpoint printftype (s : string) : Set :=
 
 ## Generating the type of printf
 
+
+
 ```coq
-Inductive Exp : Set -> Set :=
-| add        : Exp nat  -> Exp nat -> Exp nat
-| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
-| lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : forall n : string, printftype n -> Exp unit
+Inductive Exp : Set → Set :=
+| add        : Exp nat  → Exp nat → Exp nat
+| ifthenelse : Exp bool → Exp nat → Exp nat → Exp nat
+| lt         : Exp nat  → Exp nat → Exp bool
+| printf     : forall n : string, printftype n → Exp unit
 with
 Fixpoint printftype (s : string) : Set :=
   match s with
@@ -106,12 +122,14 @@ Fixpoint printftype (s : string) : Set :=
 
 ## Generating the type of printf
 
+
+
 ```coq
-Inductive Exp : Set -> Set :=
-| add        : Exp nat  -> Exp nat -> Exp nat
-| ifthenelse : Exp bool -> Exp nat -> Exp nat -> Exp nat
-| lt         : Exp nat  -> Exp nat -> Exp bool
-| printf     : forall n : string, printftype n -> Exp unit
+Inductive Exp : Set → Set :=
+| add        : Exp nat  → Exp nat → Exp nat
+| ifthenelse : Exp bool → Exp nat → Exp nat → Exp nat
+| lt         : Exp nat  → Exp nat → Exp bool
+| printf     : forall n : string, printftype n → Exp unit
 with
 Fixpoint printftype (s : string) : Set :=
   match s with
@@ -123,26 +141,27 @@ Fixpoint printftype (s : string) : Set :=
 
 ## Induction-Recursion
 
+
+
 ```coq
 Inductive DList (A : Set) : Set :=
 | nil : DList A
-| cons : forall (b : A) (u : DList), fresh u b -> DList A
+| cons : forall (b : A) (u : DList), fresh u b → DList A
 with
 Fixpoint fresh (as : DList A) (a : A) : Set :=
   match as with
   | nil => true
-  | cons x xs p => x != a /\ fresh xs a
+  | cons b u H => a != b /\ fresh u a
   end.
 ```
 
 \talknote{Note that we'll have A implicit and != as well in the remainder of the slides.}
 
-<!--- Intuitively: At a certain stage we may have constructed some u: Dlist since fresh is defined by dlist-recursion we already know what it menas for an elem b: S to be fresh wrt u. That is, we know what b' is as a proof. hence, it makes sense to construct cons.
-**Note**: Other definition of DList are possible (eg. list with nodup proof). But this definition maybe feels natural and is distinct by construction. --->
-
 # General Schema for Induction-Recursion
 
 ## General Schema
+
+
 
 - Formation Rules
 - Introduction Rules
@@ -150,6 +169,7 @@ Fixpoint fresh (as : DList A) (a : A) : Set :=
 - Elimination Rules
 
 ## General Schema : Formation Rules
+
 
 \talknote{Note: Following the paper, these definitions consider one inductive type and one recursive function. Can be generalised to more}
 
@@ -178,6 +198,10 @@ $$
 
 ## General Schema : Formation Rules
 
+
+\talknote{SIGMA}
+
+
 Formation Rules:
 
 $$
@@ -202,6 +226,8 @@ $$
 
 ## General Schema : Formation Rules
 
+
+
 The previous slide showed explicit parameters, in the rest of the presentation we consider parameters to be implicit.
 
 Resulting in:
@@ -217,6 +243,8 @@ $$
 
 ## General Schema : Introduction Rules
 
+
+
 Introduction Rules:
 
 $$
@@ -224,6 +252,8 @@ $$
 $$
 
 ## General Schema : Introduction Rules
+
+
 
 Introduction Rules:
 
@@ -237,6 +267,8 @@ $$
 ---
 
 ## General Schema : Introduction Rules
+
+
 
 Typing criteria for $\xi, p$ and $q$ are analogous.
 $$
@@ -259,6 +291,8 @@ $$
 
 ## General Schema : Introduction Rules
 
+
+
 $$
 \textit{intro} : \;\; \cdots \;\;  (b : \beta)\;\;\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
 $$
@@ -276,9 +310,11 @@ $$
 
 ## General Schema : Introduction Rules
 
+
+
 Introduction Rules:
 $$
-\textit{intro} : \cdots (b : \beta) \cdots (u : (x :: \xi)P(p[x])) \cdots P(q)
+\textit{intro} : \cdots (b : \beta) \cdots (u : (x :: \xi)P(p[x])) \cdots (b' : \beta') \cdots P(q)
 $$
 
 Example:
@@ -294,9 +330,10 @@ $3$ premises of which only the second one is recursive.
 <!--- Very lonnngggg --->
 - $b : A$, non-recursive, $\beta = A$.
 - $u : \on{DList}$, recursive, $\xi$ empty and $P = \on{DList}$.
-- $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta[b,u] = \hat{\beta}[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
+- $H : \on{Fresh}(u,b)$, non-recursive, depends on $u$ (a $\on{DList}$ instance, but only through $\on{Fresh}$), $\beta'[b,u] = \hat{\beta}'[b, \on{Fresh}(u)] = \on{Fresh}(u,b)$. 
 
-\talknote{At a certain stage we may have constructed u: Dlist. Since Fresh
+\talknote{Weird E is xi}
+\talknote{At the end, why this is a valid construction: At a certain stage we may have constructed u: Dlist. Since Fresh
 is defined by Dlist-recursion, we already know what it means for an element b: A to
 be fresh with respect to u, that is, we know what a proof b': Fresh(u, b) is. Hence
 it makes sense to construct an element cons(b, u, b'). Moreover, we can define
@@ -305,6 +342,8 @@ Fresh(cons(b, u, b')) in terms of the already constructed proposition Fresh}
 ---
 
 ## General Schema : Introduction Rules
+
+
 
 $$
 \textit{intro} : \;\; \cdots \;\; (b : \beta)\;\;\cdots \;\;(u : (x :: \xi)P(p[x]))\;\; \cdots \;\; P(q)
@@ -329,6 +368,8 @@ intro:  &\; (A :: \sigma) \\
 
 ## General Schema : Equality Rules
 
+
+
 Equality Rules:
 
 $$
@@ -343,6 +384,8 @@ $$
 ---
 
 ## General Schema: Equality Rules
+
+
 
 $$
 f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots)
@@ -362,6 +405,8 @@ $$
 
 ## General Schema : Equality Rules
 
+
+
 $$
 f(q,\textit{intro}(\ldots, b, \ldots, u,\ldots)) = e(\ldots,b,\ldots,(x)f(p[x],u(x)),\ldots)
 $$
@@ -379,8 +424,8 @@ Example:
 
 $$
 \begin{aligned}
-  \on{Fresh}(\on{nil}, a) &= (a)\top \\
-  \on{Fresh}(\on{cons}(b, u, H), a) &= (a)(b \neq a \land \on{Fresh}(u,a))
+  \on{Fresh}(\on{nil}) &= (a)\top \\
+  \on{Fresh}(\on{cons}(b, u, H)) &= (a)(b \neq a \land \on{Fresh}(u,a))
 \end{aligned}
 % \begin{aligned}
 %   f(\_, \pi_0(b, u)) &= e(b, u) \\
@@ -391,6 +436,8 @@ $$
 $$
 
 ## General Schema : Elimination Rules
+
+
 
 Let $P,f$ be a simultaneously defined inductive type $P$ with recursive function $f$.
 
@@ -405,6 +452,8 @@ using $P$-recursion.
 ---
 
 ## General Schema : Elimination Rules
+
+
 
 Elimination:
 $$
@@ -426,18 +475,26 @@ $$
 
 ## General Schema : Elimination Rules
 
+
+
+$$
+g(q,\textit{intro}(\ldots,b,\ldots,u,\ldots)) = e'(\ldots,b,\ldots, u, (x)g(p[x], u(x)), \ldots)
+$$ 
+
 Example:
 $$
 \begin{aligned}
   \on{length} &: (c : \on{DList})\mathbb{N} \\
   \on{length}(\on{nil}) &= 0 \\
-  \on{length}(\on{cons(b, u, H)}) &= S(\on{length}(u))
-\end{aligned}
+  \on{length}(\on{cons}(b, u, H)) &= S(\on{length}(u))
+\end{aligned} 
 $$
 
 # Tarski Universe Construction
 
 ## Universes
+
+
 
 * Russel style Universe:
   
@@ -455,14 +512,16 @@ $$
 
 ## Tarski Universe
 
+
+
 Example: Universe $(U,T)$ containing types for natural numbers and boolean values:
 
 $$
 \begin{aligned}
-  \langle\textit{naturals}\rangle &: U \\
-  \langle\textit{booleans}\rangle &: U \\
-  T(\langle\textit{naturals}\rangle) &= \mathbb{N} \\
-  T(\langle\textit{booleans}\rangle) &= \mathbb{B} \\
+  \langle\textit{nat}\rangle &: U \\
+  \langle\textit{bool}\rangle &: U \\
+  T(\langle\textit{nat}\rangle) &= \mathbb{N} \\
+  T(\langle\textit{bool}\rangle) &= \mathbb{B} \\
   3 &: \mathbb{N} \\
   \on{True} &: \mathbb{B}
 \end{aligned}
@@ -476,6 +535,8 @@ $$
 
 ## Definition of $(U_0, T_0)$
 
+
+
 Goal: Use our induction-recursion framework to construct the first Tarski universe $(U_0, T_0)$.
 
 We need
@@ -487,6 +548,8 @@ We need
 ---
 
 ## $(U_0, T_0)$ Formation rules
+
+
 
 $$
 \begin{aligned}
@@ -501,11 +564,15 @@ $$
 
 ## $(U_0, T_0)$ Introduction rules
 
+
+
 We need a constructor (introduction rule) for every type former in the theory.
 
 Restricting ourselves to $\Pi$ and equality-types:
 $$
 \begin{aligned}
+\langle\textit{nat}\rangle &: U_0 \\
+\langle\textit{bool}\rangle &: U_0 \\
 \pi_0 &: (u: U_0)(u': (x : T_0(u)) U_0)U_0 \\
 \text{eq}_0 &: (U : U_0)(b,b' : T_0(u))U_0
 \end{aligned}
@@ -515,28 +582,61 @@ $$
 
 ## $(U_0, T_0)$ Equality rules
 
+
+
 $$
 \begin{aligned}
+T(\langle\textit{nat}\rangle) &= \mathbb{N} \\
+T(\langle\textit{bool}\rangle) &= \mathbb{B} \\
 T_0(\pi_0(u, u')) &= \Pi(T_0(u), (x)T_0(u'(x))) \\
 T_0(\text{eq}_0(u,b, b')) &= \on{Eq}(T_0(u), b, b')
 \end{aligned}
 $$
 
+$$ \; $$
+
 Remember: 
 $$
 \begin{aligned}
+\langle\textit{nat}\rangle &: U_0 \\
+\langle\textit{bool}\rangle &: U_0 \\
 \pi_0 &: (u: U_0)(u': (x : T_0(u)) U_0)U_0 \\
 \text{eq}_0 &: (U : U_0)(b,b' : T_0(u))U_0
 \end{aligned}
 $$
 
-. . .
+---
+
+## $(U_0, T_0)$ Equality rules
+
+
+
+$$
+\begin{aligned}
+T(\langle\textit{nat}\rangle) &= \mathbb{N} \\
+T(\langle\textit{bool}\rangle) &= \mathbb{B} \\
+T_0(\pi_0(u, u')) &= \Pi(T_0(u), (x)T_0(u'(x))) \\
+T_0(\text{eq}_0(u,b, b')) &= \on{Eq}(T_0(u), b, b')
+\end{aligned}
+$$
 
 $$ \Pi x : T_0(u) . T_0(u'(x)) $$
+
+Remember: 
+$$
+\begin{aligned}
+\langle\textit{nat}\rangle &: U_0 \\
+\langle\textit{bool}\rangle &: U_0 \\
+\pi_0 &: (u: U_0)(u': (x : T_0(u)) U_0)U_0 \\
+\text{eq}_0 &: (U : U_0)(b,b' : T_0(u))U_0
+\end{aligned}
+$$
 
 ---
 
 ## Further Universes
+
+
 
 Second universe $(U_1, T_1)$.
 
@@ -552,15 +652,17 @@ T_1 &: (U_1)\set
 $$\begin{aligned}
   \pi_1 &: (u: U_1)(u': (x : T_1(u)) U_1)U_1 \\
   T_1(\pi_1(u, u')) &= \Pi(T_1(u), (x)T_1(u'(x))) \\
-  &\; \\
-  u_{01} &: U_1 \\
-  T_1(u_{01}) &= U_0 \\
 \end{aligned}$$
 
 ## Further Universes
 
-<!--- This t_01 is a constructor for U_1 --->
+
+\talknote{This t_01 is a constructor for U_1}
+
 $$\begin{aligned}
+  u_{01} &: U_1 \\
+  T_1(u_{01}) &= U_0 \\
+  &\; \\
   t_{01} &: U_0(U_1) \\
   T_1(t_{01}(b)) &= T_0(b)
 \end{aligned}$$
@@ -569,6 +671,11 @@ Repeat for $(U_2,T_2), (U_3, T_3), \ldots$
 ---
 
 ## Internalizing Universe Construction
+
+
+\talknote{NextU maps (old U, old T) to next U}  
+\talknote{NextT maps (old U, old T) to a function from codes to next T}
+\talknote{It's a bit like Successor over the universes.}
 
 We can internalize the construction of universes using a *simultaneous inductive-recursive* scheme.
 
@@ -579,9 +686,21 @@ $$
 \end{aligned}
 $$
 
+. . .
+
+$$
+\begin{aligned}
+  U_{n+1} &= \on{NextU}(U_n, T_n) \\
+  T_{n+1} &= \on{NextT}(U_n, T_n)
+\end{aligned}
+$$
+
+
 ---
 
 ## Internalizing Universe Construction
+
+
 
 We can internalize the construction of universes using a *simultaneous inductive-recursive* scheme.
 
@@ -600,15 +719,15 @@ Keep in mind, $U : \set$ and $T : (U)\set$ exist implicitly.
 
 ## Internalizing Universe Construction
 
-$$
-\begin{aligned}
-  \on{NextU} &: \set, \\
-  \on{NextT} &: (\on{NextU})\set
-\end{aligned}
-$$
+
 
 $$
 \begin{aligned}
+\pi &: (u: U)(u': (x : T(u)) U)U \\
+T(\pi(u, u')) &= \Pi(T(u), (x)T(u'(x))) \\
+\text{eq} &: (U : U)(b,b' : T(u))U \\
+T(\text{eq}(u,b, b')) &= \on{Eq}(T(u), b, b')\\
+&\;\\
 * &: \on{NextU} \\
 \on{NextT}(*) &= U \\
 t &: (b : U)\on{NextU} \\
@@ -616,9 +735,13 @@ t &: (b : U)\on{NextU} \\
 \end{aligned}
 $$
 
+\talknote{We add the constructions analogously to what we did with U_0, we add a special star wich is of type nextu (mind the parameters) and we define NextT * to be U (parameter) (think of the pred funtion on natural numbers). NextT and t function are similar in function to the t01 function we saw earlier}
+
 ---
 
 ## Super Universes
+
+
 
 Super universe $U_{\infty}$ is the closure of the next universe operator **and** all other type formers.
 
@@ -636,12 +759,20 @@ $$
 
 ## Super Universe
 
+
+
 $$ u_0 : U_{\infty}, $$
 $$ T_{\infty}(u_0) = U_0, $$
 $$ \operatorname*{NextU} : (u : U_{\infty})(u' : (T_{\infty}(u))U_{\infty})U_{\infty}, $$
 $$ T_{\infty}(\operatorname*{NextU}(u, u')) = \operatorname*{NextU}(T_{\infty}(u), (x)T_{\infty}(u'(x))) $$
 
+\talknote{NextU is the same, and u' is the T but then dependent (because the decoding function depends on the current universe).}
+
 ## Conclusion
+
+
+
+Simultaneous induction-recursion is a powerful concept allowing to create more expressive constructions.
 
 We showed:
 

@@ -9,4 +9,4 @@ slides.pdf:slides.md
 	lualatex -pdf -shell-escape -jobname=slides slides 
 
 clean:
-	rm slides.!(md) || true
+	bash -c "rm slides.!(md)" || true
